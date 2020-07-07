@@ -84,18 +84,18 @@ window.addEventListener('load', function() {
         }).filter(function(device){
           return !!device;
         }).filter(function(device){
-          if(!device.ui) return false;
-          if(!device.ui.quickAction) return false;
-          return true;
+          return (device.ui && device.ui.quickAction) || device.images.length;
         });
         
         favoriteDevices.forEach(function(device){
-          device.makeCapabilityInstance(device.ui.quickAction, function(value){
-            var $device = document.getElementById('device-' + device.id);
-            if( $device ) {
-              $device.classList.toggle('on', !!value);
-            }
-          });
+          if (device.ui.quickAction) {
+            device.makeCapabilityInstance(device.ui.quickAction, function (value) {
+              var $device = document.getElementById('device-' + device.id);
+              if ($device) {
+                $device.classList.toggle('on', !!value);
+              }
+            });
+          }
         });
         
         return renderDevices(favoriteDevices);
@@ -147,6 +147,12 @@ window.addEventListener('load', function() {
       $device.classList.add('device');
       $device.classList.toggle('on', device.capabilitiesObj && device.capabilitiesObj[device.ui.quickAction] && device.capabilitiesObj[device.ui.quickAction].value === true);
       $device.addEventListener('click', function(){
+        if (device.images.length) {
+          window.open(device.images[0].imageObj.fullUrl);
+
+          return;
+        }
+
         var value = !$device.classList.contains('on');
         $device.classList.toggle('on', value);
         homey.devices.setCapabilityValue({
@@ -156,11 +162,23 @@ window.addEventListener('load', function() {
         }).catch(console.error);
       });
       $devicesInner.appendChild($device);
-      
-      var $icon = document.createElement('div');
-      $icon.classList.add('icon');
-      $icon.style.webkitMaskImage = 'url(https://icons-cdn.athom.com/' + device.iconObj.id + '-128.png)';
-      $device.appendChild($icon);
+
+      if (device.images.length) {
+        var $stream = document.createElement('img');
+        $stream.classList.add('stream');
+        $stream.src = device.images[0].imageObj.fullUrl;
+
+        setInterval(function() {
+          $stream.src = device.images[0].imageObj.fullUrl + '?_r=' + Math.random();
+        }, 500);
+
+        $device.appendChild($stream);
+      } else if (device.iconObj) {
+        var $icon = document.createElement('div');
+        $icon.classList.add('icon');
+        $icon.style.webkitMaskImage = 'url(https://icons-cdn.athom.com/' + device.iconObj.id + '-128.png)';
+        $device.appendChild($icon);
+      }
       
       var $name = document.createElement('div');
       $name.classList.add('name');

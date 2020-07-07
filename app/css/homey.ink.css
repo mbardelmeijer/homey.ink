@@ -171,6 +171,7 @@ body {
         box-sizing: border-box;
         padding: 24px;
         margin-right: 24px;
+        overflow: hidden;
         
         opacity: 0.5;
       }
@@ -186,6 +187,12 @@ body {
           -webkit-mask-repeat: no-repeat;
           -webkit-mask-position: center center;
         }
+        .device .stream {
+          margin: -20px;
+          width: calc(100% + 40px);
+          height: calc(100% + 40px);
+          object-fit: cover;
+        }
         .device .name {
           width: 100%;
           font-size: 28px;
@@ -195,4 +202,5 @@ body {
           overflow: hidden;
           white-space: normal;
           text-overflow: ellipsis;
+          text-shadow: 0 2px 13px #fff;
         }
