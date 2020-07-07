@@ -12,7 +12,7 @@
 
 #header {
   height: 20vh;
-  margin-bottom: 2vh;
+  margin-bottom: 0;
 }
   
 #weather {
@@ -100,7 +100,7 @@
     }
 
 #flows {
-  margin-bottom: 4vh;
+  margin-bottom: 2vh;
 }
   .flow {
     height: 7vh;
