@@ -221,7 +221,6 @@ window.addEventListener('load', function() {
     if (!isTouchMoveAllowed) {
       event.preventDefault();
     }
-
-  });
+  };
   
 });
