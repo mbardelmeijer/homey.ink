@@ -205,5 +205,23 @@ window.addEventListener('load', function() {
     $textLarge.innerHTML = 'Good ' + tod + '!';
     $textSmall.innerHTML = 'Today is ' + moment(now).format('dddd[, the ]Do[ of ]MMMM YYYY[.]');
   }
+
+  document.ontouchmove = function (event) {
+    var isTouchMoveAllowed = false;
+    var p = event.target;
+
+    while (p != null) {
+      if (p.classList && p.classList.contains("touchMoveAllowed")) {
+        isTouchMoveAllowed = true;
+        break;
+      }
+      p = p.parentNode;
+    }
+
+    if (!isTouchMoveAllowed) {
+      event.preventDefault();
+    }
+
+  });
   
 });
