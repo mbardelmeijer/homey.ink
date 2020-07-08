@@ -52,14 +52,6 @@
   #text-small {
     font-size: 3vh;
   }
-
-#logo {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 10vh;
-  height: 10vh;
-}
   
 .favorites {
   position: static;

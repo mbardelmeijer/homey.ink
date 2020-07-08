@@ -8,15 +8,10 @@ window.addEventListener('load', function() {
   
   var $textLarge = document.getElementById('text-large');
   var $textSmall = document.getElementById('text-small');
-  var $logo = document.getElementById('logo');
   var $weatherTemperature = document.getElementById('weather-temperature');
   var $weatherState = document.getElementById('weather-state');
   var $flowsInner = document.getElementById('flows-inner');
   var $devicesInner = document.getElementById('devices-inner');
-  
-  $logo.addEventListener('click', function(){
-    window.location.reload();
-  });
   
   renderText();
   later.setInterval(function(){
@@ -36,10 +31,16 @@ window.addEventListener('load', function() {
   document.head.appendChild($css);
   
   var token = getQueryVariable('token');
+  if (!token) {
+    document.getElementById('container').innerHTML = 'No token specified.';
+
+    return;
+  }
+
   token = atob(token);
   token = JSON.parse(token);
   api.setToken(token);
-  
+
   api.isLoggedIn().then(function(loggedIn) {
     if(!loggedIn)
       throw new Error('Token Expired. Please log-in again.');
@@ -51,8 +52,9 @@ window.addEventListener('load', function() {
     return homey.authenticate();
   }).then(function(homey_) {
     homey = homey_;
-    
-    renderHomey();    
+
+    renderHomey();
+
     later.setInterval(function(){
       renderHomey();
     }, later.parse.text('every 1 hour'));
@@ -184,6 +186,8 @@ window.addEventListener('load', function() {
       $name.classList.add('name');
       $name.innerHTML = device.name;
       $device.appendChild($name);
+
+      document.getElementById('container-inner').style.opacity = 1;
     });
   }
   
@@ -205,22 +209,5 @@ window.addEventListener('load', function() {
     $textLarge.innerHTML = 'Good ' + tod + '!';
     $textSmall.innerHTML = 'Today is ' + moment(now).format('dddd[, the ]Do[ of ]MMMM YYYY[.]');
   }
-
-  document.ontouchmove = function (event) {
-    var isTouchMoveAllowed = false;
-    var p = event.target;
-
-    while (p != null) {
-      if (p.classList && p.classList.contains("touchMoveAllowed")) {
-        isTouchMoveAllowed = true;
-        break;
-      }
-      p = p.parentNode;
-    }
-
-    if (!isTouchMoveAllowed) {
-      event.preventDefault();
-    }
-  };
   
 });
