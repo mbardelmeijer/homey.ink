@@ -2,17 +2,17 @@ var CLIENT_ID = '5cbb504da1fc782009f52e46';
 var CLIENT_SECRET = 'gvhs0gebgir8vz8yo2l0jfb49u9xzzhrkuo1uvs8';
 
 window.addEventListener('load', function() {
-  
+
   var homey;
   var me;
-  
+
   var $textLarge = document.getElementById('text-large');
   var $textSmall = document.getElementById('text-small');
   var $weatherTemperature = document.getElementById('weather-temperature');
   var $weatherState = document.getElementById('weather-state');
   var $flowsInner = document.getElementById('flows-inner');
   var $devicesInner = document.getElementById('devices-inner');
-  
+
   renderText();
   later.setInterval(function(){
     renderText();
@@ -22,28 +22,44 @@ window.addEventListener('load', function() {
     clientId: CLIENT_ID,
     clientSecret: CLIENT_SECRET,
   });
-  
+
   var theme = getQueryVariable('theme') || 'web';
   var $css = document.createElement('link');
   $css.rel = 'stylesheet';
   $css.type = 'text/css';
   $css.href = './css/themes/' + theme + '.css';
   document.head.appendChild($css);
-  
-  var token = getQueryVariable('token');
-  if (!token) {
-    document.getElementById('container').innerHTML = 'No token specified.';
 
-    return;
+  document.getElementById('login').onclick = function () {
+    var askedToken = prompt('What is your token?');
+
+    if (askedToken) {
+      localStorage.setItem('token', decodeURIComponent(askedToken));
+
+      window.location.reload();
+    }
+  };
+
+  var token = getQueryVariable('token') || localStorage.getItem('token');
+  if (!token) {
+     document.getElementById('login').style.display = 'block';
+     return;
   }
 
-  token = atob(token);
-  token = JSON.parse(token);
-  api.setToken(token);
+  if (token) {
+    token = atob(token);
+    token = JSON.parse(token);
+    api.setToken(token);
+  }
 
   api.isLoggedIn().then(function(loggedIn) {
-    if(!loggedIn)
-      throw new Error('Token Expired. Please log-in again.');
+    if(!loggedIn) {
+      localStorage.removeItem('token');
+
+      alert('Token Expired. Please log-in again.');
+
+      throw new Error();
+    }
   }).then(function(){
     return api.getAuthenticatedUser();
   }).then(function(user) {
@@ -59,27 +75,27 @@ window.addEventListener('load', function() {
       renderHomey();
     }, later.parse.text('every 1 hour'));
   }).catch(console.error);
-  
+
   function renderHomey() {
     homey.users.getUserMe().then(function(user) {
       me = user;
       me.properties = me.properties || {};
       me.properties.favoriteFlows = me.properties.favoriteFlows || [];
       me.properties.favoriteDevices = me.properties.favoriteDevices || [];
-      
+
       homey.weather.getWeather().then(function(weather) {
         return renderWeather(weather);
       }).catch(console.error);
-      
+
       homey.flow.getFlows().then(function(flows) {
         var favoriteFlows = me.properties.favoriteFlows.map(function(flowId){
           return flows[flowId];
         }).filter(function(flow){
           return !!flow;
         });
-        return renderFlows(favoriteFlows);        
+        return renderFlows(favoriteFlows);
       }).catch(console.error);
-      
+
       homey.devices.getDevices().then(function(devices) {
         var favoriteDevices = me.properties.favoriteDevices.map(function(deviceId){
           return devices[deviceId];
@@ -88,7 +104,7 @@ window.addEventListener('load', function() {
         }).filter(function(device){
           return (device.ui && device.ui.quickAction) || device.images.length;
         });
-        
+
         favoriteDevices.forEach(function(device){
           if (device.ui.quickAction) {
             device.makeCapabilityInstance(device.ui.quickAction, function (value) {
@@ -99,48 +115,48 @@ window.addEventListener('load', function() {
             });
           }
         });
-        
+
         return renderDevices(favoriteDevices);
       }).catch(console.error);
     }).catch(console.error);
   }
-  
+
   function renderWeather(weather) {
     $weatherTemperature.innerHTML = Math.round(weather.temperature);
     $weatherState.innerHTML = weather.state;
   }
-  
+
   function renderFlows(flows) {
     $flowsInner.innerHTML = '';
     flows.forEach(function(flow) {
       var $flow = document.createElement('div');
       $flow.id = 'flow-' + flow.id;
       $flow.classList.add('flow');
-      $flow.addEventListener('click', function(){        
+      $flow.addEventListener('click', function(){
         if( $flow.classList.contains('running') ) return;
         homey.flow.triggerFlow({
           id: flow.id,
-        }).then(function(){          
-          
-          $flow.classList.add('running');                
+        }).then(function(){
+
+          $flow.classList.add('running');
           setTimeout(function(){
             $flow.classList.remove('running');
           }, 3000);
         }).catch(console.error);
       });
       $flowsInner.appendChild($flow);
-      
+
       var $play = document.createElement('div');
       $play.classList.add('play');
       $flow.appendChild($play);
-      
+
       var $name = document.createElement('div');
       $name.classList.add('name');
       $name.innerHTML = flow.name;
       $flow.appendChild($name);
     });
   }
-  
+
   function renderDevices(devices) {
     $devicesInner.innerHTML = '';
     devices.forEach(function(device) {
@@ -181,7 +197,7 @@ window.addEventListener('load', function() {
         $icon.style.webkitMaskImage = 'url(https://icons-cdn.athom.com/' + device.iconObj.id + '-128.png)';
         $device.appendChild($icon);
       }
-      
+
       var $name = document.createElement('div');
       $name.classList.add('name');
       $name.innerHTML = device.name;
@@ -190,11 +206,11 @@ window.addEventListener('load', function() {
       document.getElementById('container-inner').style.opacity = 1;
     });
   }
-  
+
   function renderText() {
     var now = new Date();
     var hours = now.getHours();
-    
+
     var tod;
     if( hours >= 18 ) {
       tod = 'evening';
@@ -205,9 +221,9 @@ window.addEventListener('load', function() {
     } else {
       tod = 'night';
     }
-    
+
     $textLarge.innerHTML = 'Good ' + tod + '!';
     $textSmall.innerHTML = 'Today is ' + moment(now).format('dddd[, the ]Do[ of ]MMMM YYYY[.]');
   }
-  
+
 });
