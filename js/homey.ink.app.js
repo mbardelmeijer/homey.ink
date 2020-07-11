@@ -166,7 +166,7 @@ window.addEventListener('load', function() {
       $device.classList.toggle('on', device.capabilitiesObj && device.capabilitiesObj[device.ui.quickAction] && device.capabilitiesObj[device.ui.quickAction].value === true);
       $device.addEventListener('click', function(){
         if (device.images.length) {
-          window.open(device.images[0].imageObj.fullUrl);
+          window.location.href = '#camera-modal';
 
           return;
         }
@@ -182,13 +182,14 @@ window.addEventListener('load', function() {
       $devicesInner.appendChild($device);
 
       if (device.images.length) {
+        var canvas = createVideoCanvasFromImageStream(device.images[0].imageObj.fullUrl);
+
+        console.log(canvas);
+
+        // @TODO: this should also be a canvas that copies the other one
         var $stream = document.createElement('img');
         $stream.classList.add('stream');
-        $stream.src = device.images[0].imageObj.fullUrl;
-
-        setInterval(function() {
-          $stream.src = device.images[0].imageObj.fullUrl + '?_r=' + Math.random();
-        }, 500);
+        $stream.src = null;
 
         $device.appendChild($stream);
       } else if (device.iconObj) {
@@ -205,6 +206,10 @@ window.addEventListener('load', function() {
 
       document.getElementById('container-inner').style.opacity = 1;
     });
+  }
+
+  function createVideoCanvasFromImageStream(url) {
+
   }
 
   function renderText() {

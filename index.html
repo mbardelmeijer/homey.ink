@@ -1,62 +1,79 @@
 <!doctype html>
 <html>
-  <head>
+<head>
     <title>Homey.ink</title>
-    
+
     <meta charset="UTF-8">
     <meta http-equiv="refresh" content="43200">
-    
+
     <meta name="viewport" content="width=user-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
-    <link rel="shortcut icon" href="./img/favicon.png" type="image/png" />
+
+    <link rel="shortcut icon" href="./img/favicon.png" type="image/png"/>
     <link rel="apple-touch-icon" href="./img/favicon.png">
+    <link rel="stylesheet" type="text/css" href="https://rawcdn.githack.com/hunzaboy/Light-Modal/d3cf12b64ba4f847f9740a292c95f679f8fc6a9c/dist/css/light-modal.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css">
     <link rel="stylesheet" type="text/css" href="./css/homey.ink.css">
-    
+
     <script type="text/javascript" src="//cdn.athom.com/athom-api/2.1.185/athom-api.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/nosleep/0.11.0/NoSleep.min.js"></script>
+    <script type="text/javascript" src="//www.rocksetta.com/tensorflowjs/saved-models/face-api-js/face-api.js"></script>
     <script type="text/javascript" src="./js/polyfill.js"></script>
     <script type="text/javascript" src="./js/later.js"></script>
     <script type="text/javascript" src="./js/homey.ink.helpers.js"></script>
     <script type="text/javascript" src="./js/homey.ink.app.js"></script>
-  </head>
-  <body>
+    <script type="text/javascript" src="./js/homey.ink.face.js"></script>
+</head>
+<body>
 
-    <a href="" id="login">Login with token</a>
-    
-    <div id="container">
-      
-      <div id="container-inner">
-        
+<a href="" id="login">Login with token</a>
+
+<div id="container">
+
+    <div id="container-inner">
+
         <div id="header">
-          <div id="text">
-            <div id="text-large"></div>
-            <div id="text-small"></div>
-          </div>
-          
-          <div id="weather">
-            <div id="weather-temperature">n/a</div>
-            <div id="weather-state">n/a</div>
-          </div>
+            <div id="text">
+                <div id="text-large"></div>
+                <div id="text-small"></div>
+            </div>
+
+            <div id="weather">
+                <div id="weather-temperature">n/a</div>
+                <div id="weather-state">n/a</div>
+            </div>
         </div>
-        
+
         <div id="content">
-          <div id="flows" class="favorites">
-            <h2><span>Favorite Flows</span></h2>
-            <div id="flows-inner" class="flows favorites-inner"></div>
-          </div>
-          
-          <div id="devices" class="favorites">
-            <h2><span>Favorite Devices</span></h2>
-            <div id="devices-inner" class="devices favorites-inner"></div>
-          </div>
+            <div id="flows" class="favorites">
+                <h2><span>Favorite Flows</span></h2>
+                <div id="flows-inner" class="flows favorites-inner"></div>
+            </div>
+
+            <div id="devices" class="favorites">
+                <h2><span>Favorite Devices</span></h2>
+                <div id="devices-inner" class="devices favorites-inner"></div>
+            </div>
         </div>
-      
-      </div>
+
     </div>
-    
-  </body>
+</div>
+
+<div class="light-modal" id="camera-modal" role="dialog" aria-labelledby="light-modal-label" aria-hidden="false">
+    <a href="#" class="light-modal-close-icon" style="position: absolute; top: 20px; right: 20px; z-index: 100;" aria-label="close">&times;</a>
+
+    <div class="light-modal-content large-content animate__animated animate__fadeInDownBig animate__faster" style=" border-radius: 20px; overflow: hidden;">
+        <div id="face-detect" style="position: relative; display: inline-flex; background: #000; height: 100%;">
+            <img width="640" height="480" src="" crossorigin="anonymous">
+            <canvas width="640" height="480" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; user-select: none;"></canvas>
+        </div>
+    </div>
+</div>
+
+
+
+</body>
 </html>

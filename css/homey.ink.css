@@ -1,50 +1,51 @@
 * {
-  margin: 0;
-  padding: 0;
-  border: none;
-  -webkit-tap-highlight-color: transparent;
+    margin: 0;
+    padding: 0;
+    border: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 html,
 body {
-  width: 100%;
-  height: 100%;
+    width: 100%;
+    height: 100%;
 }
 
 body {
-  background: white;
-  color: black;
+    background: white;
+    color: black;
 
-  font-family: Helvetica, sans-serif;
+    font-family: Helvetica, sans-serif;
 }
 
 #login {
-  vertical-align: middle;
-  overflow: hidden;
-  white-space: nowrap;
-  border: 2px solid black;
-  border-radius: 64px;
-  color: #fff;
-  background: #000;
-  text-align: center;
-  padding: 20px 10px;
-  text-decoration: none;
-  margin: 2rem;
-  display: none;
+    vertical-align: middle;
+    overflow: hidden;
+    white-space: nowrap;
+    border: 2px solid black;
+    border-radius: 64px;
+    color: #fff;
+    background: #000;
+    text-align: center;
+    padding: 20px 10px;
+    text-decoration: none;
+    margin: 2rem;
+    display: none;
 }
 
 #container {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
-  #container-inner {
+
+#container-inner {
     position: relative;
     width: 100%;
     height: 100%;
     opacity: 0;
     transition: .3s ease-in opacity;
-  }
+}
 
-  #logo {
+#logo {
     position: absolute;
     right: 0;
     top: 0;
@@ -52,172 +53,219 @@ body {
     height: 110px;
     background: url(../img/logo.png) no-repeat center center;
     background-size: contain;
-  }
+}
 
-  #text {
+#text {
     text-align: center;
-  }
-    #text-large {
-      font-size: 64px;
-      font-weight: 700;
-      margin-top: 20px;
-    }
-    #text-large:after {
-      content: "";
-      display: block;
-      height: 1px;
-      background: black;
-      width: 200px;
-      margin: auto;
-      margin: 40px auto;
-    }
-    #text-small {
-      font-size: 34px;
-      font-weight: 500;
-    }
+}
 
-  #weather {
+#text-large {
+    font-size: 64px;
+    font-weight: 700;
+    margin-top: 20px;
+}
 
-  }
-    #weather-temperature {
-      font-size: 100px;
-      font-weight: 500;
-      line-height: 96px;
-    }
-    #weather-temperature:after {
-      content: "°";
-    }
-    #weather-state {
-      font-size: 48px;
-      font-weight: 700;
-    }
+#text-large:after {
+    content: "";
+    display: block;
+    height: 1px;
+    background: black;
+    width: 200px;
+    margin: auto;
+    margin: 40px auto;
+}
 
-  .favorites {
+#text-small {
+    font-size: 34px;
+    font-weight: 500;
+}
 
-  }
-    .favorites h2 {
-      display: block;
-      width: 1000px;
-      font-size: 42px;
-      font-weight: 700;
-      padding-bottom: 12px;
-      margin-bottom: 30px;
-    }
-    .favorites h2:after {
-      content: "";
-      display: block;
-      height: 2px;
-      background: linear-gradient(to right, #000000 0%, rgba(0,0,0,0) 100%);
-    }
-    .favorites-inner {
-      font-size: 0;
-      overflow-x: hidden;
-      white-space: nowrap;
-      overflow: hidden;
-      -webkit-mask-image: linear-gradient(to right, #000000 90%, rgba(0,0,0,0) 100%);
-    }
+#weather {
 
-  #flows {
-  }
-    .flows {
-    }
-      .flow {
-        position: relative;
-        display: inline-block;
-        vertical-align: middle;
-        overflow: hidden;
-        white-space: nowrap;
-        height: 64px;
-        border: 2px solid black;
-        border-radius: 64px;
-        overflow: hidden;
-        font-size: 0;
-        margin-right: 24px;
-      }
-      .flow.running:before {
-        content: "✓";
-        color: white;
-        text-align: center;
-        line-height: 64px;
-        display: block;
-        background: black;
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        top: 0;
-        font-size: 32px;
-      }
-        .flow .play {
-          display: inline-block;
-          vertical-align: middle;
-          width: 64px;
-          height: 64px;
-          background: url(../img/play.png) no-repeat center center;
-          background-size: contain;
-        }
-        .flow .name {
-          display: inline-block;
-          vertical-align: middle;
-          height: 64px;
-          line-height: 64px;
-          font-size: 28px;
-          font-weight: 700;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          padding: 0 20px;
-          padding-right: 30px;
-          max-width: 300px;
-        }
+}
 
-  #devices {
+#weather-temperature {
+    font-size: 100px;
+    font-weight: 500;
+    line-height: 96px;
+}
 
-  }
-    .devices {
-      overflow-y: visible;
-    }
-      .device {
-        display: inline-block;
-        vertical-align: middle;
-        position: relative;
-        width: 200px;
-        height: 200px;
-        border: 2px solid black;
-        border-radius: 32px;
-        box-sizing: border-box;
-        padding: 24px;
-        margin-right: 24px;
-        overflow: hidden;
+#weather-temperature:after {
+    content: "°";
+}
 
-        opacity: 0.5;
-      }
-      .device.on {
-        opacity: 1;
-      }
-        .device .icon {
-          width: 90px;
-          height: 90px;
-          background: black;
-          margin-bottom: 6px;
-          -webkit-mask-size: contain;
-          -webkit-mask-repeat: no-repeat;
-          -webkit-mask-position: center center;
-        }
-        .device .stream {
-          margin: -20px;
-          width: calc(100% + 40px);
-          height: calc(100% + 40px);
-          object-fit: cover;
-        }
-        .device .name {
-          width: 100%;
-          font-size: 28px;
-          height: 64px;
-          line-height: 32px;
-          font-weight: 700;
-          overflow: hidden;
-          white-space: normal;
-          text-overflow: ellipsis;
-          text-shadow: 0 2px 13px #fff;
-        }
+#weather-state {
+    font-size: 48px;
+    font-weight: 700;
+}
+
+.favorites {
+
+}
+
+.favorites h2 {
+    display: block;
+    width: 1000px;
+    font-size: 42px;
+    font-weight: 700;
+    padding-bottom: 12px;
+    margin-bottom: 30px;
+}
+
+.favorites h2:after {
+    content: "";
+    display: block;
+    height: 2px;
+    background: linear-gradient(to right, #000000 0%, rgba(0, 0, 0, 0) 100%);
+}
+
+.favorites-inner {
+    font-size: 0;
+    overflow-x: hidden;
+    white-space: nowrap;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, #000000 90%, rgba(0, 0, 0, 0) 100%);
+}
+
+#flows {
+}
+
+.flows {
+}
+
+.flow {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    overflow: hidden;
+    white-space: nowrap;
+    height: 64px;
+    border: 2px solid black;
+    border-radius: 64px;
+    overflow: hidden;
+    font-size: 0;
+    margin-right: 24px;
+}
+
+.flow.running:before {
+    content: "✓";
+    color: white;
+    text-align: center;
+    line-height: 64px;
+    display: block;
+    background: black;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    font-size: 32px;
+}
+
+.flow .play {
+    display: inline-block;
+    vertical-align: middle;
+    width: 64px;
+    height: 64px;
+    background: url(../img/play.png) no-repeat center center;
+    background-size: contain;
+}
+
+.flow .name {
+    display: inline-block;
+    vertical-align: middle;
+    height: 64px;
+    line-height: 64px;
+    font-size: 28px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 20px;
+    padding-right: 30px;
+    max-width: 300px;
+}
+
+#devices {
+
+}
+
+.devices {
+    overflow-y: visible;
+}
+
+.device {
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    width: 200px;
+    height: 200px;
+    border: 2px solid black;
+    border-radius: 32px;
+    box-sizing: border-box;
+    padding: 24px;
+    margin-right: 24px;
+    overflow: hidden;
+
+    opacity: 0.5;
+}
+
+.device.on {
+    opacity: 1;
+}
+
+.device .icon {
+    width: 90px;
+    height: 90px;
+    background: black;
+    margin-bottom: 6px;
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center center;
+}
+
+.device .stream {
+    margin: -20px;
+    width: calc(100% + 40px);
+    height: calc(100% + 40px);
+    object-fit: cover;
+}
+
+.device .name {
+    width: 100%;
+    font-size: 28px;
+    height: 64px;
+    line-height: 32px;
+    font-weight: 700;
+    overflow: hidden;
+    white-space: normal;
+    text-overflow: ellipsis;
+    text-shadow: 0 2px 13px #fff;
+}
+
+.light-modal {
+    visibility: visible;
+    display: block;
+    opacity: 0;
+    pointer-events: none;
+}
+.light-modal-content {
+    width: 90vw !important;
+    height: 90vh !important;
+    max-height: 100% !important;
+}
+.light-modal:target {
+    opacity: 1;
+    pointer-events: all;
+}
+.light-modal-close-icon, .light-modal-close-btn {
+    background: #fff;
+    font-size: 3em;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+    height: 50px;
+    width: 50px;
+}

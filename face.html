@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://www.rocksetta.com/tensorflowjs/saved-models/face-api-js/face-api.js"></script>
+</head>
+<body>
+<div id="context"></div>
+
+<video onplay="onPlay(this)" id="inputVideo" autoplay muted width="640" height="480" style=" border: 1px solid #ddd;"></video>
+<br>
+<canvas id="overlay" width="640" height="480" style="position:relative; top:-487px; border: 1px solid #ddd;"></canvas>
+<br>
+
+</body>
+
+<script>
+
+    ////////////////////////// A few helper functions ///////////////////////////////////////////
+
+    function resizeCanvasAndResults(dimensions, canvas, results) {
+        const {width, height} = dimensions instanceof HTMLVideoElement
+            ? faceapi.getMediaDimensions(dimensions)
+            : dimensions
+        canvas.width = width
+        canvas.height = height
+        console.log(results);
+        return results.map(res => res.forSize(width, height))
+    }
+
+
+    function drawLandmarks(dimensions, canvas, results, withBoxes = true) {
+        const resizedResults = resizeCanvasAndResults(dimensions, canvas, results)
+        if (withBoxes) {
+            faceapi.drawDetection(canvas, resizedResults.map(det => det.detection))
+        }
+        // const faceLandmarks = resizedResults.map(det => det.landmarks)
+        // const drawLandmarksOptions = { lineWidth: 2, drawLines: true, color: 'green' }
+        // faceapi.drawLandmarks(canvas, faceLandmarks, drawLandmarksOptions)
+    }
+
+    ////////////////////////// The 2 Main functions ///////////////////////////////////////////
+
+    async function onPlay() {
+        const videoEl = document.getElementById('inputVideo')
+        const options = new faceapi.TinyFaceDetectorOptions({inputSize: 128, scoreThreshold: 0.3})
+
+        result = await faceapi.detectSingleFace(videoEl, options).withFaceLandmarks(true)
+        if (result) {
+            drawLandmarks(videoEl, document.getElementById('overlay'), [result], true)
+
+            // Just printing the first of 68 face landmark x and y
+            document.getElementById('context').innerHTML = 'First of 68 face landmarks, x: ' +
+                Math.round(result._unshiftedLandmarks._positions[0]._x) + ', y: ' +
+                Math.round(result._unshiftedLandmarks._positions[0]._y) + '<br>'
+        } else {
+            document.getElementById('context').innerHTML = 'Not found<br>';
+        }
+
+        setTimeout(() => onPlay())
+    }
+
+    async function run() {
+        await faceapi.loadTinyFaceDetectorModel('https://hpssjellis.github.io/face-api.js-for-beginners/')
+        await faceapi.loadFaceLandmarkTinyModel('https://hpssjellis.github.io/face-api.js-for-beginners/')
+
+        const stream = await navigator.mediaDevices.getUserMedia({video: {}})
+        const videoEl = document.getElementById('inputVideo')
+        videoEl.srcObject = stream
+    }
+
+    run();
+
+</script>
+</body>
+</html>
