@@ -245,7 +245,7 @@ body {
 
 .light-modal {
     visibility: visible;
-    display: block;
+    display: flex;
     opacity: 0;
     pointer-events: none;
 }

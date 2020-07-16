@@ -9,9 +9,9 @@ function resizeCanvasAndResults(dimensions, canvas, results) {
 
 var detectionCounter = 0;
 
-async function faceDetect(container) {
-    const source = container.getElementsByTagName('img')[0];
-    const canvas = container.getElementsByTagName('canvas')[0];
+async function faceDetect() {
+    const source = document.getElementById('image');
+    const canvas = document.getElementById('overlay');
 
     const options = new faceapi.TinyFaceDetectorOptions({inputSize: 256, scoreThreshold: 0.7})
 
@@ -53,14 +53,6 @@ async function faceDetect(container) {
     }
 
     console.log('detectionCounter: ' + detectionCounter);
-
-    let img = new Image()
-    img.onload = () => {
-        document.getElementById('face-detect').getElementsByTagName('img')[0].src = img.src;
-
-        faceDetect(container);
-    }
-    img.src = 'https://192-168-0-5.homey.homeylocal.com/image/b980c0f7-0d4a-4b10-8a23-848a98e1a987/image?_face=' + Math.random();
 }
 
 window.addEventListener('load', async function run() {
@@ -69,9 +61,32 @@ window.addEventListener('load', async function run() {
 
     // window.location.href = '#';
 
-    const imgEl = document.getElementById('face-detect').getElementsByTagName('img')[0]
+    let timeout = null;
+    window.drawToCanvas = (url) => {
+        const baseUrl = url;
+        const canvas = document.querySelector('#face-detect #image');
 
-    imgEl.src = 'https://192-168-0-5.homey.homeylocal.com/image/b980c0f7-0d4a-4b10-8a23-848a98e1a987/image';
+        var img = document.createElement('img');
+        img.src = baseUrl;
+        img.crossOrigin = "anonymous";
 
-    imgEl.onload = faceDetect(document.getElementById('face-detect'))
+        img.onload = function () {
+
+            var context = canvas.getContext('2d');
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.drawImage(img, 0, 0);
+
+            canvas.dispatchEvent(new Event('drawn'));
+
+            faceDetect();
+
+            img.src = baseUrl + '?_r=' + Math.random();
+        };
+
+        return canvas;
+
+        // if (timeout) clearTimeout(timeout);
+        // timeout = setTimeout(loop, 1000);
+    };
+    // loop();
 });

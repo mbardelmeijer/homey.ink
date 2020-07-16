@@ -182,16 +182,28 @@ window.addEventListener('load', function() {
       $devicesInner.appendChild($device);
 
       if (device.images.length) {
-        var canvas = createVideoCanvasFromImageStream(device.images[0].imageObj.fullUrl);
+        var canvas = document.createElement('canvas');
+          canvas.classList.add('stream');
 
-        console.log(canvas);
+          function drawImageScaled(img, ctx) {
+              var canvas = ctx.canvas ;
+              var hRatio = canvas.width  / img.width    ;
+              var vRatio =  canvas.height / img.height  ;
+              var ratio  = Math.min ( hRatio, vRatio );
+              var centerShift_x = ( canvas.width - img.width*ratio ) / 2;
+              var centerShift_y = ( canvas.height - img.height*ratio ) / 2;
+              ctx.clearRect(0,0,canvas.width, canvas.height);
+              ctx.drawImage(img, 0,0, img.width, img.height,
+                  centerShift_x,centerShift_y,img.width*ratio, img.height*ratio);
+          }
 
-        // @TODO: this should also be a canvas that copies the other one
-        var $stream = document.createElement('img');
-        $stream.classList.add('stream');
-        $stream.src = null;
+        drawToCanvas(device.images[0].imageObj.fullUrl).addEventListener('drawn', function (source) {
+            // canvas.getContext('2d').drawImage(this, 0, 0, canvas.width, canvas.height);
 
-        $device.appendChild($stream);
+            drawImageScaled(this, canvas.getContext('2d'));
+        });
+
+        $device.appendChild(canvas);
       } else if (device.iconObj) {
         var $icon = document.createElement('div');
         $icon.classList.add('icon');
@@ -206,10 +218,6 @@ window.addEventListener('load', function() {
 
       document.getElementById('container-inner').style.opacity = 1;
     });
-  }
-
-  function createVideoCanvasFromImageStream(url) {
-
   }
 
   function renderText() {
