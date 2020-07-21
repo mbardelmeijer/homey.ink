@@ -13,7 +13,7 @@ async function faceDetect() {
     const source = document.getElementById('image');
     const canvas = document.getElementById('overlay');
 
-    const options = new faceapi.TinyFaceDetectorOptions({inputSize: 256, scoreThreshold: 0.7})
+    const options = new faceapi.TinyFaceDetectorOptions({inputSize: 256, scoreThreshold: 0.5})
 
     const result = await faceapi.detectSingleFace(source, options).withFaceLandmarks(true)
 
@@ -71,7 +71,6 @@ window.addEventListener('load', async function run() {
         img.crossOrigin = "anonymous";
 
         img.onload = function () {
-
             var context = canvas.getContext('2d');
             context.clearRect(0, 0, canvas.width, canvas.height);
             context.drawImage(img, 0, 0);
@@ -81,6 +80,12 @@ window.addEventListener('load', async function run() {
             faceDetect();
 
             img.src = baseUrl + '?_r=' + Math.random();
+        };
+
+        img.onerror = function () {
+            setTimeout(function () {
+                img.src = baseUrl + '?_r=' + Math.random();
+            }, 1000);
         };
 
         return canvas;

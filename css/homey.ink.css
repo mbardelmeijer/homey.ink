@@ -162,6 +162,21 @@ body {
     font-size: 32px;
 }
 
+.flow.errored:before {
+    content: "X";
+    color: white;
+    text-align: center;
+    line-height: 55px;
+    display: block;
+    background: #F56565;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    font-size: 32px;
+}
+
 .flow .play {
     display: inline-block;
     vertical-align: middle;

@@ -139,15 +139,22 @@ window.addEventListener('load', function () {
             $flow.classList.add('flow');
             $flow.addEventListener('click', function () {
                 if ($flow.classList.contains('running')) return;
+
+                $flow.classList.add('running');
+
                 homey.flow.triggerFlow({
                     id: flow.id,
                 }).then(function () {
-
-                    $flow.classList.add('running');
                     setTimeout(function () {
                         $flow.classList.remove('running');
-                    }, 3000);
-                }).catch(console.error);
+                    }, 1500);
+                }).catch(function (e) {
+                    $flow.classList.add('errored');
+
+                    setTimeout(function () {
+                        $flow.classList.remove('errored');
+                    }, 10000);
+                });
             });
             $flowsInner.appendChild($flow);
 
