@@ -52,7 +52,7 @@ async function faceDetect() {
         }
     }
 
-    console.log('detectionCounter: ' + detectionCounter);
+    // console.log('detectionCounter: ' + detectionCounter);
 }
 
 window.addEventListener('load', async function run() {

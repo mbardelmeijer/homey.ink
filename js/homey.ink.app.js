@@ -107,15 +107,20 @@ window.addEventListener('load', function () {
                 }).filter(function (device) {
                     return !!device;
                 }).filter(function (device) {
-                    return (device.ui && device.ui.quickAction) || device.images.length;
+                    return (device.ui && device.ui.quickAction) || device.images.length || device.class === 'windowcoverings';
                 });
 
                 favoriteDevices.forEach(function (device) {
-                    if (device.ui.quickAction) {
-                        device.makeCapabilityInstance(device.ui.quickAction, function (value) {
+                    var capability = !device.ui.quickAction && device.capabilitiesObj['windowcoverings_state'] ? 'windowcoverings_state' : device.ui.quickAction;
+
+                    if (capability) {
+                        device.makeCapabilityInstance(capability, function (value) {
+                            console.log(device, value);
+
+                            // Update dynamically
                             var $device = document.getElementById('device-' + device.id);
                             if ($device) {
-                                $device.classList.toggle('on', !!value);
+                                $device.classList.toggle('on', isOn(device));
                             }
                         });
                     }
@@ -124,6 +129,24 @@ window.addEventListener('load', function () {
                 return renderDevices(favoriteDevices);
             }).catch(console.error);
         }).catch(console.error);
+    }
+
+    function isOn(device) {
+        var capability = !device.ui.quickAction && device.capabilitiesObj['windowcoverings_state'] ? 'windowcoverings_state' : device.ui.quickAction;
+
+        if (!device.capabilitiesObj[capability]) {
+            return false;
+        }
+
+        console.log(device.capabilitiesObj[capability].value)
+
+        switch (device.capabilitiesObj[capability].value) {
+            case 'idle': return false;
+            case 'down': return true;
+            case 'up': return false;
+        }
+
+        return device.capabilitiesObj[capability].value === true
     }
 
     function renderWeather(weather) {
@@ -175,7 +198,7 @@ window.addEventListener('load', function () {
             var $device = document.createElement('div');
             $device.id = 'device-' + device.id;
             $device.classList.add('device');
-            $device.classList.toggle('on', device.capabilitiesObj && device.capabilitiesObj[device.ui.quickAction] && device.capabilitiesObj[device.ui.quickAction].value === true);
+            $device.classList.toggle('on', isOn(device));
             $device.addEventListener('click', function () {
                 if (device.images.length) {
                     window.location.href = '#camera-modal';
@@ -185,6 +208,17 @@ window.addEventListener('load', function () {
 
                 var value = !$device.classList.contains('on');
                 $device.classList.toggle('on', value);
+
+                if (!device.ui.quickAction && device.capabilitiesObj['windowcoverings_state']) {
+                    homey.devices.setCapabilityValue({
+                        deviceId: device.id,
+                        capabilityId: device.capabilitiesObj['windowcoverings_state']['id'],
+                        value: value ? 'down' : 'up',
+                    }).catch(console.error);
+
+                    return;
+                }
+
                 homey.devices.setCapabilityValue({
                     deviceId: device.id,
                     capabilityId: device.ui.quickAction,
@@ -216,12 +250,20 @@ window.addEventListener('load', function () {
                 });
 
                 $device.appendChild(canvas);
-            } else if (device.iconObj) {
+            } else {
+                var icon;
+                if (device.iconObj) {
+                    icon = 'https://icons-cdn.athom.com/' + device.iconObj.id + '-128.png';
+                } else {
+                    icon = 'https://raw.githubusercontent.com/athombv/homey-vectors-public/master/device_classes/' + device.virtualClass + '.svg';
+                }
+
                 var $icon = document.createElement('div');
                 $icon.classList.add('icon');
-                $icon.style.webkitMaskImage = 'url(https://icons-cdn.athom.com/' + device.iconObj.id + '-128.png)';
+                $icon.style.webkitMaskImage = 'url(' + icon + ')';
                 $device.appendChild($icon);
             }
+            console.log(device);
 
             var $name = document.createElement('div');
             $name.classList.add('name');
