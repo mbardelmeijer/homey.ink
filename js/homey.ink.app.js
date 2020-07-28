@@ -120,7 +120,7 @@ window.addEventListener('load', function () {
                             // Update dynamically
                             var $device = document.getElementById('device-' + device.id);
                             if ($device) {
-                                $device.classList.toggle('on', isOn(device));
+                                $device.classList.toggle('on', isOn(device, value));
                             }
                         });
                     }
@@ -131,22 +131,22 @@ window.addEventListener('load', function () {
         }).catch(console.error);
     }
 
-    function isOn(device) {
+    function isOn(device, value) {
         var capability = !device.ui.quickAction && device.capabilitiesObj['windowcoverings_state'] ? 'windowcoverings_state' : device.ui.quickAction;
 
         if (!device.capabilitiesObj[capability]) {
             return false;
         }
 
-        console.log(device.capabilitiesObj[capability].value)
+        value = value === undefined ? device.capabilitiesObj[capability].value : value;
 
-        switch (device.capabilitiesObj[capability].value) {
+        switch (value) {
             case 'idle': return false;
             case 'down': return true;
             case 'up': return false;
         }
 
-        return device.capabilitiesObj[capability].value === true
+        return value === true
     }
 
     function renderWeather(weather) {
@@ -198,7 +198,7 @@ window.addEventListener('load', function () {
             var $device = document.createElement('div');
             $device.id = 'device-' + device.id;
             $device.classList.add('device');
-            $device.classList.toggle('on', isOn(device));
+            $device.classList.toggle('on', device.images.length || isOn(device));
             $device.addEventListener('click', function () {
                 if (device.images.length) {
                     window.location.href = '#camera-modal';
