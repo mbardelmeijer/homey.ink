@@ -2,7 +2,7 @@
 
 body {
   font-family: Roboto, Helvetica, sans-serif;
-  background: -webkit-linear-gradient(55deg, #009785 0%, #245AA5 50%, #B800E9 100%);
+  background: -webkit-linear-gradient(55deg, #000 0%, #555 50%, #666 100%);
   background-attachment: fixed;
   color: white;
 }

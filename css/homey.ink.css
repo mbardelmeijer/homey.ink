@@ -258,6 +258,19 @@ body {
     text-shadow: 0 2px 13px #fff;
 }
 
+.device .value {
+    font-size: 16px;
+    font-weight: 700;
+    overflow: hidden;
+    white-space: normal;
+    text-overflow: ellipsis;
+    text-shadow: 0 2px 13px #fff;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: #999;
+}
+
 .light-modal {
     visibility: visible;
     /*display: flex;*/

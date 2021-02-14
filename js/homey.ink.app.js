@@ -111,16 +111,14 @@ window.addEventListener('load', function () {
                 });
 
                 favoriteDevices.forEach(function (device) {
-                    var capability = !device.ui.quickAction && device.capabilitiesObj['windowcoverings_state'] ? 'windowcoverings_state' : device.ui.quickAction;
+                    var capability = getCapability(device);
 
                     if (capability) {
                         device.makeCapabilityInstance(capability, function (value) {
-                            console.log(device, value);
-
                             // Update dynamically
                             var $device = document.getElementById('device-' + device.id);
                             if ($device) {
-                                $device.classList.toggle('on', isOn(device, value));
+                                updateDeviceStatus($device, device, value);
                             }
                         });
                     }
@@ -131,19 +129,51 @@ window.addEventListener('load', function () {
         }).catch(console.error);
     }
 
+    function updateDeviceStatus($device, device, value) {
+        $device.classList.toggle('on', isOn(device, value));
+
+        // if (!device.ui.quickAction && device.capabilitiesObj['windowcoverings_set']) {
+        //     $device.querySelector('.value').innerHTML = device.capabilitiesObj['windowcoverings_set'].value;
+        // }
+    }
+
+    function getCapability(device) {
+        if (device.ui.quickAction) {
+            return device.ui.quickAction;
+        }
+
+        if (device.capabilitiesObj['windowcoverings_state']) {
+            return 'windowcoverings_state';
+        }
+
+        if (device.capabilitiesObj['windowcoverings_set']) {
+            return 'windowcoverings_set';
+        }
+
+        return null;
+    }
+
     function isOn(device, value) {
-        var capability = !device.ui.quickAction && device.capabilitiesObj['windowcoverings_state'] ? 'windowcoverings_state' : device.ui.quickAction;
+        var capability = getCapability(device);
 
         if (!device.capabilitiesObj[capability]) {
             return false;
         }
 
         value = value === undefined ? device.capabilitiesObj[capability].value : value;
+        console.log(device.capabilitiesObj[capability]);
+        // If curtains are closed more then 20%, we mark it as closed.
+        if (capability === 'windowcoverings_set') {
+            return value > 0.05;
+        }
 
         switch (value) {
-            case 'idle': return false;
-            case 'down': return true;
-            case 'up': return false;
+            case 'idle':
+                return false;
+            case 'down':
+                return true;
+            case 'up':
+                return false;
         }
 
         return value === true
@@ -206,6 +236,9 @@ window.addEventListener('load', function () {
                     return;
                 }
 
+                $device.classList.add('clicked');
+                setTimeout(() => $device.classList.remove('clicked'), 5000);
+
                 var value = !$device.classList.contains('on');
                 $device.classList.toggle('on', value);
 
@@ -214,6 +247,16 @@ window.addEventListener('load', function () {
                         deviceId: device.id,
                         capabilityId: device.capabilitiesObj['windowcoverings_state']['id'],
                         value: value ? 'down' : 'up',
+                    }).catch(console.error);
+
+                    return;
+                }
+
+                if (!device.ui.quickAction && device.capabilitiesObj['windowcoverings_set']) {
+                    homey.devices.setCapabilityValue({
+                        deviceId: device.id,
+                        capabilityId: device.capabilitiesObj['windowcoverings_set']['id'],
+                        value: value ? 1 : 0.05
                     }).catch(console.error);
 
                     return;
@@ -263,12 +306,19 @@ window.addEventListener('load', function () {
                 $icon.style.webkitMaskImage = 'url(' + icon + ')';
                 $device.appendChild($icon);
             }
-            console.log(device);
+            // console.log(device);
 
             var $name = document.createElement('div');
             $name.classList.add('name');
             $name.innerHTML = device.name;
             $device.appendChild($name);
+
+            // if (!device.ui.quickAction && device.capabilitiesObj['windowcoverings_set']) {
+            //     var $value = document.createElement('div');
+            //     $value.classList.add('value');
+            //     $value.innerHTML = device.capabilitiesObj['windowcoverings_set'].value;
+            //     $device.appendChild($value);
+            // }
 
             document.getElementById('container-inner').style.opacity = 1;
         });
@@ -292,5 +342,4 @@ window.addEventListener('load', function () {
         $textLarge.innerHTML = 'Good ' + tod + '!';
         $textSmall.innerHTML = 'Today is ' + moment(now).format('dddd[, the ]Do[ of ]MMMM YYYY[.]');
     }
-
 });
